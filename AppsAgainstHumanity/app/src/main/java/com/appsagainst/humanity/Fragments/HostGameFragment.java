@@ -9,8 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.appsagainst.humanity.Events.ClientAdded;
 import com.appsagainst.humanity.Global;
@@ -20,8 +20,8 @@ import com.appsagainst.humanity.LocalMultiplayer.NsdHelper;
 import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,9 +32,11 @@ public class HostGameFragment extends Fragment {
     ListView listView;
 
     NsdHelper mNsdHelper;
-    NsdHelper mNsdHelperSearch;
     GameServer gameServer;
     GameClient gameClient;
+
+    List<String> clients = new ArrayList<>();
+    ArrayAdapter<String> adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,17 +60,10 @@ public class HostGameFragment extends Fragment {
         mNsdHelper.initializeNsd();
         mNsdHelper.registerService(gameServer.getLocalPort());
 
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    gameClient = new GameClient(InetAddress.getLocalHost(), gameServer.getLocalPort());
-                } catch(UnknownHostException e){
+        gameClient = new GameClient("http://127.0.0.1", gameServer.getLocalPort());
 
-                }
-            }
-        });
-        t.start();
+        adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, clients);
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -81,7 +76,8 @@ public class HostGameFragment extends Fragment {
 
     @Subscribe
     public void clientAdded(ClientAdded ca){
-        Toast.makeText(getActivity(), ca.clientName, Toast.LENGTH_SHORT);
+        clients.add(ca.clientName);
+        adapter.notifyDataSetChanged();
     }
 
 }

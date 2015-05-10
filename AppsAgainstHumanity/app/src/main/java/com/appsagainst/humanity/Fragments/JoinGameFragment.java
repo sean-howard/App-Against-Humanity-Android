@@ -3,6 +3,7 @@ package com.appsagainst.humanity.Fragments;
 /**
  * Created by User on 09/05/2015.
  */
+
 import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,8 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.appsagainst.humanity.Events.ServerFoundEvent;
 import com.appsagainst.humanity.Global;
@@ -19,6 +21,9 @@ import com.appsagainst.humanity.LocalMultiplayer.GameClient;
 import com.appsagainst.humanity.LocalMultiplayer.NsdHelper;
 import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,6 +37,9 @@ public class JoinGameFragment extends Fragment {
 
     String TAG = "JoinGameFragment";
 
+    List<String> hosts = new ArrayList<>();
+    List<NsdServiceInfo> hostsInfo = new ArrayList<>();
+    ArrayAdapter<String> adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +58,15 @@ public class JoinGameFragment extends Fragment {
 
         mNsdHelper = new NsdHelper(getActivity());
         mNsdHelper.initializeNsd();
+
+        adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, hosts);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                clickConnect(hostsInfo.get(position));
+            }
+        });
     }
 
     @Override
@@ -71,6 +88,8 @@ public class JoinGameFragment extends Fragment {
 
     @Subscribe
     public void serverFound(ServerFoundEvent sfe){
-        Toast.makeText(getActivity(), sfe.serverName, Toast.LENGTH_SHORT);
+        hosts.add(sfe.serverName);
+        hostsInfo.add(sfe.serviceInfo);
+        adapter.notifyDataSetChanged();
     }
 }

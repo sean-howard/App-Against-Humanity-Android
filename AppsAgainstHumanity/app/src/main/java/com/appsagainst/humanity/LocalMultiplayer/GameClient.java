@@ -36,8 +36,29 @@ public class GameClient {
         };
 
         AsyncHttpClient mAsyncHttpClient = AsyncHttpClient.getDefaultInstance();
-        mAsyncHttpClient.websocket("http://127.0.0.1:" + PORT, null, mWebSocketConnectCallback);
+        mAsyncHttpClient.websocket(address.getHostAddress() + ":" + PORT, null, mWebSocketConnectCallback);
     }
+
+    public GameClient(String url, int port) {
+        Log.d(CLIENT_TAG, "Creating GameClient");
+        this.PORT = port;
+
+        AsyncHttpClient.WebSocketConnectCallback mWebSocketConnectCallback = new AsyncHttpClient.WebSocketConnectCallback() {
+            @Override
+            public void onCompleted(Exception ex, WebSocket webSocket) {
+                if (ex != null) {
+                    ex.printStackTrace();
+                    return;
+                }
+
+                socket = webSocket;
+            }
+        };
+
+        AsyncHttpClient mAsyncHttpClient = AsyncHttpClient.getDefaultInstance();
+        mAsyncHttpClient.websocket(url + ":" + PORT, null, mWebSocketConnectCallback);
+    }
+
 
     private WebSocket getSocket() {
         return socket;
