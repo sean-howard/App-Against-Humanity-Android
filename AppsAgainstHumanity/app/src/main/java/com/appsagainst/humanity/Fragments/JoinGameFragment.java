@@ -1,4 +1,4 @@
-package com.appsagainst.humanity;
+package com.appsagainst.humanity.Fragments;
 
 /**
  * Created by User on 09/05/2015.
@@ -13,10 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.appsagainst.humanity.Events.ClientAdded;
 import com.appsagainst.humanity.Events.ServerFoundEvent;
+import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.LocalMultiplayer.GameClient;
-import com.appsagainst.humanity.LocalMultiplayer.GameServer;
+import com.appsagainst.humanity.LocalMultiplayer.NsdHelper;
+import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;

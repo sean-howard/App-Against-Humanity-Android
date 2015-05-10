@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.appsagainst.humanity;
+package com.appsagainst.humanity.LocalMultiplayer;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -23,6 +23,7 @@ import android.net.nsd.NsdManager;
 import android.util.Log;
 
 import com.appsagainst.humanity.Events.ServerFoundEvent;
+import com.appsagainst.humanity.Global;
 
 public class NsdHelper {
 
@@ -72,6 +73,7 @@ public class NsdHelper {
                     Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
                 } else if (service.getServiceName().equals(mServiceName)) {
                     Log.d(TAG, "Same machine: " + mServiceName);
+                    mNsdManager.resolveService(service, mResolveListener);
                 } else if (service.getServiceName().contains(mServiceName)){
                     Log.d(TAG, "Other machine: " + mServiceName);
                     mNsdManager.resolveService(service, mResolveListener);
@@ -117,10 +119,6 @@ public class NsdHelper {
                 Log.e(TAG, "Resolve Succeeded. " + serviceInfo);
 
                 Global.getInstance().bus.post(new ServerFoundEvent(serviceInfo.getServiceName(), serviceInfo));
-                if (serviceInfo.getServiceName().equals(mServiceName)) {
-                    Log.d(TAG, "Same IP.");
-                    return;
-                }
                 mService = serviceInfo;
             }
         };

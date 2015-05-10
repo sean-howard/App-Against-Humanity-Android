@@ -2,7 +2,7 @@ package com.appsagainst.humanity;
 
 import android.app.Application;
 
-import com.squareup.otto.Bus;
+import com.appsagainst.humanity.Events.MainThreadBus;
 
 /**
  * Created by User on 09/05/2015.

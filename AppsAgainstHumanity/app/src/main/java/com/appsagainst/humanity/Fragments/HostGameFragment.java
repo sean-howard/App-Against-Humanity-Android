@@ -1,26 +1,30 @@
-package com.appsagainst.humanity;
+package com.appsagainst.humanity.Fragments;
 
 /**
  * Created by User on 09/05/2015.
  */
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.appsagainst.humanity.Events.ClientAdded;
-import com.appsagainst.humanity.Events.ServerSetupEvent;
+import com.appsagainst.humanity.Global;
+import com.appsagainst.humanity.LocalMultiplayer.GameClient;
 import com.appsagainst.humanity.LocalMultiplayer.GameServer;
+import com.appsagainst.humanity.LocalMultiplayer.NsdHelper;
+import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 public class HostGameFragment extends Fragment {
 
@@ -28,7 +32,9 @@ public class HostGameFragment extends Fragment {
     ListView listView;
 
     NsdHelper mNsdHelper;
+    NsdHelper mNsdHelperSearch;
     GameServer gameServer;
+    GameClient gameClient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +44,7 @@ public class HostGameFragment extends Fragment {
         ButterKnife.inject(this, view);
         return view;
     }
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -49,8 +56,19 @@ public class HostGameFragment extends Fragment {
 
         mNsdHelper = new NsdHelper(getActivity());
         mNsdHelper.initializeNsd();
-
         mNsdHelper.registerService(gameServer.getLocalPort());
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    gameClient = new GameClient(InetAddress.getLocalHost(), gameServer.getLocalPort());
+                } catch(UnknownHostException e){
+
+                }
+            }
+        });
+        t.start();
     }
 
     @Override
@@ -64,7 +82,6 @@ public class HostGameFragment extends Fragment {
     @Subscribe
     public void clientAdded(ClientAdded ca){
         Toast.makeText(getActivity(), ca.clientName, Toast.LENGTH_SHORT);
-
-
     }
+
 }

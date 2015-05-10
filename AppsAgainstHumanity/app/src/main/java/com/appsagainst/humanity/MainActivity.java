@@ -1,13 +1,9 @@
 package com.appsagainst.humanity;
 
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.appsagainst.humanity.LocalMultiplayer.GameServer;
+import com.appsagainst.humanity.Fragments.LaunchFragment;
 
 
 public class MainActivity extends FragmentActivity {

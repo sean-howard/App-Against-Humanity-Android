@@ -1,4 +1,4 @@
-package com.appsagainst.humanity;
+package com.appsagainst.humanity.Events;
 
 import android.os.Handler;
 import android.os.Looper;
