@@ -1,15 +1,15 @@
 package com.appsagainst.humanity.POJO;
 
-import com.google.gson.annotations.Expose;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class BlackCard {
+public class BlackCard extends RealmObject {
 
-    @Expose
     private String text;
-    @Expose
-    private Integer pick;
-    @Expose
-    private Integer id;
+    private int pick;
+
+    @PrimaryKey
+    private int id;
 
     /**
      *
@@ -34,7 +34,7 @@ public class BlackCard {
      * @return
      * The pick
      */
-    public Integer getPick() {
+    public int getPick() {
         return pick;
     }
 
@@ -43,7 +43,7 @@ public class BlackCard {
      * @param pick
      * The pick
      */
-    public void setPick(Integer pick) {
+    public void setPick(int pick) {
         this.pick = pick;
     }
 
@@ -52,7 +52,7 @@ public class BlackCard {
      * @return
      * The id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class BlackCard {
      * @param id
      * The id
      */
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

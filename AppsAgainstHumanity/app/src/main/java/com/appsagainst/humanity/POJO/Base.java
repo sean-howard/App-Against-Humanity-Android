@@ -2,7 +2,7 @@ package com.appsagainst.humanity.POJO;
 
 import com.google.gson.annotations.Expose;
 
-public class Base {
+public class Base{
 
     @Expose
     private Pack Pack;

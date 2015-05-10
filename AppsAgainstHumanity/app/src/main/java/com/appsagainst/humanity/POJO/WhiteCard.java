@@ -2,12 +2,17 @@ package com.appsagainst.humanity.POJO;
 
 import com.google.gson.annotations.Expose;
 
-public class WhiteCard {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class WhiteCard extends RealmObject {
 
     @Expose
     private String text;
+
+    @PrimaryKey
     @Expose
-    private Integer id;
+    private int id;
 
     /**
      *
@@ -32,7 +37,7 @@ public class WhiteCard {
      * @return
      * The id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -41,7 +46,7 @@ public class WhiteCard {
      * @param id
      * The id
      */
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

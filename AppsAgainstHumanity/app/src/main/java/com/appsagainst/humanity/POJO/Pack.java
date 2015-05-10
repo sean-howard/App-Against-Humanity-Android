@@ -5,11 +5,15 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.annotations.PrimaryKey;
+
 
 public class Pack {
 
+    @PrimaryKey
     @Expose
     private String name;
+
     @Expose
     private List<BlackCard> blackCards = new ArrayList<BlackCard>();
     @Expose
