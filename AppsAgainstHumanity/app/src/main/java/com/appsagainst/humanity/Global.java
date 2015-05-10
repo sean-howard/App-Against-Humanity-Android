@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.appsagainst.humanity.Events.MainThreadBus;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 /**
  * Created by User on 09/05/2015.
  */
@@ -18,6 +20,15 @@ public class Global extends Application {
     }
 
     public final void onCreate() {
-        super.onCreate(); singleton = this;
+        super.onCreate();
+        singleton = this;
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                        .setDefaultFontPath("fonts/RalewayThin.ttf")
+                        .setFontAttrId(R.attr.fontPath)
+                        .build()
+        );
+
+
     }
 }
