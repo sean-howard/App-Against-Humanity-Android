@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class JoinGameFragment extends Fragment {
+
     @InjectView(R.id.listView)
     ListView listView;
 
@@ -67,6 +68,8 @@ public class JoinGameFragment extends Fragment {
                 clickConnect(hostsInfo.get(position));
             }
         });
+
+        mNsdHelper.discoverServices();
     }
 
     @Override

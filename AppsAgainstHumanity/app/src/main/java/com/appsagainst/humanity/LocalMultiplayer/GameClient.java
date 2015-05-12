@@ -18,6 +18,7 @@ public class GameClient {
     private final String CLIENT_TAG = "GameClient";
 
     WebSocket socket;
+
     public GameClient(InetAddress address, int port) {
         Log.d(CLIENT_TAG, "Creating GameClient");
         this.mAddress = address;
@@ -26,17 +27,21 @@ public class GameClient {
         AsyncHttpClient.WebSocketConnectCallback mWebSocketConnectCallback = new AsyncHttpClient.WebSocketConnectCallback() {
             @Override
             public void onCompleted(Exception ex, WebSocket webSocket) {
-                if (ex != null) {
-                    ex.printStackTrace();
-                    return;
-                }
-
                 socket = webSocket;
+
+                socket.setStringCallback(new WebSocket.StringCallback() {
+                    @Override
+                    public void onStringAvailable(String s) {
+                        Log.d(CLIENT_TAG, s);
+                    }
+                });
+
+                sendMessage("hello");
             }
         };
 
         AsyncHttpClient mAsyncHttpClient = AsyncHttpClient.getDefaultInstance();
-        mAsyncHttpClient.websocket(address.getHostAddress() + ":" + PORT, null, mWebSocketConnectCallback);
+        mAsyncHttpClient.websocket("http://" + mAddress.getHostAddress() + ":" + PORT, null, mWebSocketConnectCallback);
     }
 
     public GameClient(String url, int port) {
@@ -46,12 +51,17 @@ public class GameClient {
         AsyncHttpClient.WebSocketConnectCallback mWebSocketConnectCallback = new AsyncHttpClient.WebSocketConnectCallback() {
             @Override
             public void onCompleted(Exception ex, WebSocket webSocket) {
-                if (ex != null) {
-                    ex.printStackTrace();
-                    return;
-                }
-
                 socket = webSocket;
+
+                socket.setStringCallback(new WebSocket.StringCallback() {
+                    @Override
+                    public void onStringAvailable(String s) {
+                        Log.d(CLIENT_TAG, s);
+
+                    }
+                });
+
+                sendMessage("hello");
             }
         };
 
@@ -69,6 +79,7 @@ public class GameClient {
     }
 
     public void sendMessage(String msg) {
+        Log.d(CLIENT_TAG, msg);
         getSocket().send(msg);
     }
 }

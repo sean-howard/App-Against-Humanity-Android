@@ -44,15 +44,15 @@ public class NsdHelper {
     public NsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-
-        BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
-        mServiceName = myDevice.getName();
     }
 
     public void initializeNsd() {
         initializeResolveListener();
         initializeDiscoveryListener();
         initializeRegistrationListener();
+
+        BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
+        mServiceName = myDevice.getName();
 
         //mNsdManager.init(mContext.getMainLooper(), this);
 
@@ -74,7 +74,7 @@ public class NsdHelper {
                 } else if (service.getServiceName().equals(mServiceName)) {
                     Log.d(TAG, "Same machine: " + mServiceName);
                     mNsdManager.resolveService(service, mResolveListener);
-                } else if (service.getServiceName().contains(mServiceName)){
+                } else {
                     Log.d(TAG, "Other machine: " + mServiceName);
                     mNsdManager.resolveService(service, mResolveListener);
                 }

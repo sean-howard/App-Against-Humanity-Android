@@ -43,6 +43,16 @@ public class GameServer {
                         }
                     }
                 });
+
+                webSocket.setStringCallback(new WebSocket.StringCallback() {
+                    @Override
+                    public void onStringAvailable(String s) {
+                        Log.d("GameServer", s);
+                        sendMessage(s.toUpperCase());
+
+                    }
+                });
+
             }
         });
 
