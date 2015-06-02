@@ -17,6 +17,7 @@ import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.LocalMultiplayer.GameClient;
 import com.appsagainst.humanity.LocalMultiplayer.GameServer;
 import com.appsagainst.humanity.LocalMultiplayer.NsdHelper;
+import com.appsagainst.humanity.Protocol.Game;
 import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
 
@@ -37,6 +38,8 @@ public class HostGameFragment extends Fragment {
 
     List<String> clients = new ArrayList<>();
     ArrayAdapter<String> adapter;
+
+    Game game = new Game();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

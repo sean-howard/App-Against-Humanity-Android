@@ -61,7 +61,7 @@ public class GameClient {
                     }
                 });
 
-                sendMessage("hello");
+                sendMessage("{\"name\":\"Chris Owen\",\"action\":0}");
             }
         };
 
