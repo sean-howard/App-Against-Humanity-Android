@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.appsagainst.humanity.Events.ClientAdded;
+import com.appsagainst.humanity.Events.JoiningLobby;
 import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.LocalMultiplayer.GameClient;
 import com.appsagainst.humanity.LocalMultiplayer.GameServer;
@@ -75,8 +75,8 @@ public class HostGameFragment extends Fragment {
     }
 
     @Subscribe
-    public void clientAdded(ClientAdded ca){
-        clients.add(ca.clientName);
+    public void clientAdded(JoiningLobby ca){
+        clients.add(ca.playerName);
         adapter.notifyDataSetChanged();
     }
 
