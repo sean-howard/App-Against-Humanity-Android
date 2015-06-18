@@ -1,14 +1,11 @@
 package com.appsagainst.humanity.POJO;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class BlackCard extends RealmObject {
 
     private String text;
     private int pick;
-
-    @PrimaryKey
     private int id;
 
     /**
@@ -64,5 +61,4 @@ public class BlackCard extends RealmObject {
     public void setId(int id) {
         this.id = id;
     }
-
 }

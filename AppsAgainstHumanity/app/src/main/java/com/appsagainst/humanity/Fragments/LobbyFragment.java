@@ -24,6 +24,9 @@ import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,9 +40,6 @@ public class LobbyFragment extends Fragment {
     ListView listView;
 
     NsdHelper mNsdHelper;
-    GameServer gameServer;
-    GameClient gameClient;
-
     ArrayAdapter<Player> adapter;
 
     Game game = new Game();
@@ -64,15 +64,16 @@ public class LobbyFragment extends Fragment {
         boolean isHost = b.getBoolean("isHost", false);
 
         if(isHost){
-            gameServer = new GameServer();
+            game.gameServer = new GameServer();
 
             mNsdHelper = new NsdHelper(getActivity());
             mNsdHelper.initializeNsd();
-            mNsdHelper.registerService(gameServer.getLocalPort());
+            mNsdHelper.registerService(game.gameServer.getLocalPort());
 
-            gameClient = new GameClient(true, "http://127.0.0.1", gameServer.getLocalPort());
+            game.gameClient = new GameClient("http://127.0.0.1", game.gameServer.getLocalPort());
+            game.isHost = true;
         } else {
-            gameClient = new GameClient(false, (InetAddress)b.getSerializable("host"), b.getInt("port"));
+            game.gameClient = new GameClient((InetAddress)b.getSerializable("host"), b.getInt("port"));
         }
 
         adapter = new ArrayAdapter<Player>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.players);
@@ -93,7 +94,7 @@ public class LobbyFragment extends Fragment {
 
     @OnClick(R.id.startGame)
     public void startGame() {
-        gameClient.startSession();
+        game.gameClient.startSession();
     }
 
     @Subscribe
@@ -111,12 +112,14 @@ public class LobbyFragment extends Fragment {
             game.players.add(p);
             adapter.notifyDataSetChanged();
 
-            gameClient.informPlayersOfName();
+            game.gameClient.informPlayersOfName();
         }
     }
 
     @Subscribe
     public void startGameSession(StartGameSession ca){
+        game.players = sortGamePlayersByName(game.players);
+
         Bundle args = new Bundle();
         args.putSerializable("game",game);
 
@@ -125,4 +128,17 @@ public class LobbyFragment extends Fragment {
 
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, gameFragment).addToBackStack("1").commit();
     }
+
+    public ArrayList<Player> sortGamePlayersByName(ArrayList<Player> players){
+        Collections.sort(players, new Comparator<Player>() {
+            @Override
+            public int compare(Player object1, Player object2) {
+                return object1.name.compareTo(object2.name);
+            }
+        } );
+
+        return players;
+    }
+
+
 }

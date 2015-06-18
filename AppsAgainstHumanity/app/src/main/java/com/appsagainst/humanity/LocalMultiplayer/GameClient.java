@@ -10,6 +10,8 @@ import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by User on 09/05/2015.
@@ -17,24 +19,19 @@ import java.net.InetAddress;
 public class GameClient {
 
     private int PORT;
-    private boolean isHost = false;
 
     private final String TAG = "GameClient";
 
     WebSocket socket;
     Gson gson;
 
-    public GameClient(boolean isHost, InetAddress address, int port) {
+    public GameClient(InetAddress address, int port) {
         this.PORT = port;
-        this.isHost = isHost;
-
         setupClient("http://" + address.getHostAddress() + ":" + PORT);
     }
 
-    public GameClient(boolean isHost, String url, int port) {
+    public GameClient(String url, int port) {
         this.PORT = port;
-        this.isHost = isHost;
-
         setupClient(url + ":" + PORT);
     }
 
@@ -83,16 +80,27 @@ public class GameClient {
         sendMessage(gson.toJson(obj));
     }
 
+    public void selectBlackCardPlayer(String newBlackCardPlayer){
+        DataObject obj = new DataObject();
+        obj.action = JsonResolver.selectBlackCardPlayer;
+        obj.data.blackCardPlayerUniqueID = newBlackCardPlayer;
+        sendMessage(gson.toJson(obj));
+    }
+
+    public void distributeWhiteCards(HashMap<String, ArrayList<Integer>> cardIDs){
+        DataObject obj = new DataObject();
+        obj.action = JsonResolver.distributeWhiteStartingCards;
+        obj.data.initialCards = cardIDs;
+        sendMessage(gson.toJson(obj));
+    }
+
+
     private WebSocket getSocket() {
         return socket;
     }
 
     public void tearDown() {
         getSocket().close();
-    }
-
-    public boolean isPlayerHost(){
-        return isHost;
     }
 
     public void sendMessage(String msg) {

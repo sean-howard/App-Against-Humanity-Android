@@ -1,6 +1,8 @@
 package com.appsagainst.humanity.Managers;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.appsagainst.humanity.POJO.Base;
 import com.appsagainst.humanity.POJO.BlackCard;
@@ -9,14 +11,26 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Random;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by Chris on 10/05/2015.
  */
 public class DatabaseManager {
+
+    public static void loadDatabase(Context con){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(con);
+        if(!preferences.getBoolean("databaseLoaded", false)){
+            DatabaseManager.loadCardsIntoDatabase(con);
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("databaseLoaded", true);
+            editor.commit();
+        }
+    }
 
     public static void loadCardsIntoDatabase(Context con){
         Gson gson = new Gson();
@@ -26,11 +40,11 @@ public class DatabaseManager {
         realm.beginTransaction();
 
         for(WhiteCard card: base.getPack().getWhiteCards()){
-            //realm.copyToRealm(card);
+            realm.copyToRealm(card);
         }
 
         for(BlackCard card: base.getPack().getBlackCards()){
-            //realm.copyToRealm(card);
+            realm.copyToRealm(card);
         }
 
         realm.commitTransaction();
@@ -52,22 +66,54 @@ public class DatabaseManager {
         return json;
     }
 
-    public static RealmResults<WhiteCard> getWhiteCardByID(Context con, int id){
+    public static WhiteCard getWhiteCardByID(Context con, int id){
         Realm realm = Realm.getInstance(con);
-        RealmResults<WhiteCard> result = realm.where(WhiteCard.class)
+        WhiteCard result = realm.where(WhiteCard.class)
                 .equalTo("id", id)
-                .findAll();
+                .findFirst();
 
         return result;
     }
 
-    public static RealmResults<BlackCard> getBlackCardByID(Context con, int id){
+    public static BlackCard getBlackCardByID(Context con, int id){
         Realm realm = Realm.getInstance(con);
-        RealmResults<BlackCard> result = realm.where(BlackCard.class)
+        BlackCard result = realm.where(BlackCard.class)
                 .equalTo("id", id)
-                .findAll();
+                .findFirst();
 
         return result;
     }
+
+    public static ArrayList<Integer> getSetOfRandomWhiteCardsIDs(Context con, int amount){
+        ArrayList<Integer> cardIDs = new ArrayList<>();
+
+        Realm realm = Realm.getInstance(con);
+        int count = (int)realm.where(WhiteCard.class).count();
+
+        int min = 2000000;
+        int max = min + count;
+
+        Random r = new Random();
+        for(int i = 0; i<amount; i++){
+            int id = r.nextInt(max - min) + min;
+            cardIDs.add(id);
+        }
+
+        return cardIDs;
+    }
+
+    public static BlackCard getRandomBlackCard(Context con){
+        Realm realm = Realm.getInstance(con);
+        int count = (int)realm.where(BlackCard.class).count();
+
+        int min = 1000000;
+        int max = min + count;
+
+        Random r = new Random();
+        int id = r.nextInt(max - min) + min;
+
+        return realm.where(BlackCard.class).equalTo("id", id).findFirst();
+    }
+
 
 }
