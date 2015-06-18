@@ -6,6 +6,7 @@ import com.appsagainst.humanity.POJO.WhiteCard;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Chris.Owen on 01/06/2015.
@@ -23,6 +24,7 @@ public class Game implements Serializable{
     public ArrayList<Player> players = new ArrayList<Player>();
     public ArrayList<Match> match;
     public ArrayList<WhiteCard> currentWhiteCards = new ArrayList<>();
+    public HashMap<String, WhiteCard> submittedWhiteCards = new HashMap<>();
     public ArrayList<Integer> blackCardIDs;
 
 }

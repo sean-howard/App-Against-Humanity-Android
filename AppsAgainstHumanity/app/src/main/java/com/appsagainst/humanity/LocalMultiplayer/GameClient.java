@@ -87,6 +87,29 @@ public class GameClient {
         sendMessage(gson.toJson(obj));
     }
 
+    public void selectCard(int selectedCard){
+        DataObject obj = new DataObject();
+        obj.action = JsonResolver.submitWhiteCardToServer;
+        obj.data.whiteCardID = selectedCard;
+        obj.data.uniqueID = Global.getInstance().uniqueID;
+        sendMessage(gson.toJson(obj));
+    }
+
+    public void allCardsSubmitted(){
+        DataObject obj = new DataObject();
+        obj.action = JsonResolver.allCardsSubmitted;
+        sendMessage(gson.toJson(obj));
+    }
+
+    public void chooseWinner(String uniqueID, int whiteCardID){
+        DataObject obj = new DataObject();
+        obj.action = JsonResolver.chooseWinnerEvent;
+        obj.data.uniqueID = uniqueID;
+        obj.data.whiteCardID = whiteCardID;
+        sendMessage(gson.toJson(obj));
+    }
+
+
     public void distributeWhiteCards(HashMap<String, ArrayList<Integer>> cardIDs){
         DataObject obj = new DataObject();
         obj.action = JsonResolver.distributeWhiteStartingCards;

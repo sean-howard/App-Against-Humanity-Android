@@ -1,9 +1,12 @@
 package com.appsagainst.humanity.Protocol;
 
+import com.appsagainst.humanity.Events.AllCardsSubmitted;
 import com.appsagainst.humanity.Events.GotInitialWhiteCardIDs;
 import com.appsagainst.humanity.Events.PlayerJoinedLobby;
 import com.appsagainst.humanity.Events.SelectBlackCardPlayer;
 import com.appsagainst.humanity.Events.StartGameSession;
+import com.appsagainst.humanity.Events.SubmitWhiteCardToServer;
+import com.appsagainst.humanity.Events.WinnerChosen;
 import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.POJO.DataObject;
 
@@ -41,10 +44,13 @@ public class JsonResolver {
         } else if(object.action == displayBlackCardQuestion){
 
         } else if(object.action == submitWhiteCardToServer){
+            Global.getInstance().bus.post(new SubmitWhiteCardToServer(object.data.uniqueID, object.data.whiteCardID));
 
         } else if(object.action == allCardsSubmitted){
+            Global.getInstance().bus.post(new AllCardsSubmitted());
 
         } else if(object.action == chooseWinnerEvent){
+            Global.getInstance().bus.post(new WinnerChosen(object.data.uniqueID, object.data.whiteCardID));
 
         } else {
 
