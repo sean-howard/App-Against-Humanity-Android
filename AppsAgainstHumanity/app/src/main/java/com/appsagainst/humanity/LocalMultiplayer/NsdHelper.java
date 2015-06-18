@@ -41,6 +41,8 @@ public class NsdHelper {
 
     NsdServiceInfo mService;
 
+    boolean serviceIsRegistered = false;
+
     public NsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
@@ -106,6 +108,7 @@ public class NsdHelper {
             }
         };
     }
+
     public void initializeResolveListener() {
         mResolveListener = new NsdManager.ResolveListener() {
 
@@ -148,6 +151,7 @@ public class NsdHelper {
     }
 
     public void registerService(int port) {
+
         NsdServiceInfo serviceInfo  = new NsdServiceInfo();
         serviceInfo.setPort(port);
         serviceInfo.setServiceName(mServiceName);
@@ -155,6 +159,8 @@ public class NsdHelper {
         
         mNsdManager.registerService(
                 serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
+
+        serviceIsRegistered = true;
         
     }
 
@@ -172,6 +178,9 @@ public class NsdHelper {
     }
     
     public void tearDown() {
-        mNsdManager.unregisterService(mRegistrationListener);
+        if(serviceIsRegistered){
+            mNsdManager.unregisterService(mRegistrationListener);
+            serviceIsRegistered = false;
+        }
     }
 }

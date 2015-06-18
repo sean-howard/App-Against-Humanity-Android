@@ -5,6 +5,7 @@ import android.util.Log;
 import com.appsagainst.humanity.Events.JoiningLobby;
 import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.POJO.Game;
+import com.appsagainst.humanity.Protocol.GamePlayer;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.WebSocket;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
@@ -18,7 +19,7 @@ import java.util.Random;
  */
 public class GameServer {
     AsyncHttpServer server;
-    ArrayList<WebSocket> clientSockets = new ArrayList<>();
+    ArrayList<GamePlayer> players = new ArrayList<>();
 
     private static final String TAG = "GameServer";
     private int mPort = -1;
@@ -28,30 +29,22 @@ public class GameServer {
         server.websocket("/", new AsyncHttpServer.WebSocketRequestCallback() {
             @Override
             public void onConnected(final WebSocket webSocket, AsyncHttpServerRequest request) {
-                clientSockets.add(webSocket);
+                GamePlayer player = new GamePlayer(
+                        webSocket,
+                        new CompletedCallback() {
+                            @Override
+                            public void onCompleted(Exception ex) {
+                                players.remove(webSocket);
+                            }
+                        }, new WebSocket.StringCallback() {
+                            @Override
+                            public void onStringAvailable(String s) {
+                                sendMessage(s.toUpperCase());
 
-                //Use this to clean up any references to your websocket
-                webSocket.setClosedCallback(new CompletedCallback() {
-                    @Override
-                    public void onCompleted(Exception ex) {
-                        try {
-                            if (ex != null)
-                                Log.e("WebSocket", "Error");
-                        } finally {
-                            clientSockets.remove(webSocket);
-                        }
-                    }
-                });
+                            }
+                        });
 
-                webSocket.setStringCallback(new WebSocket.StringCallback() {
-                    @Override
-                    public void onStringAvailable(String s) {
-                        Log.d("GameServer", s);
-                        sendMessage(s.toUpperCase());
-
-                    }
-                });
-
+                players.add(player);
             }
         });
 
@@ -69,8 +62,8 @@ public class GameServer {
     }
 
     public void sendMessage(String msg) {
-        for (WebSocket socket : clientSockets) {
-            socket.send(msg);
+        for (GamePlayer player : players) {
+            player.webSocket.send(msg);
         }
     }
 }
