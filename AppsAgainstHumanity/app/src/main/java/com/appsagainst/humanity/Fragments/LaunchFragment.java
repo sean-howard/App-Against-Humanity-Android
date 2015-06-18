@@ -4,6 +4,7 @@ package com.appsagainst.humanity.Fragments;
  * Created by User on 09/05/2015.
  */
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.appsagainst.humanity.R;
+import com.appsagainst.humanity.UI.BlackCardView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,6 +26,9 @@ public class LaunchFragment extends Fragment {
     @InjectView(R.id.joinGame)
     Button joinGame;
 
+    @InjectView(R.id.card)
+    BlackCardView card;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,6 +36,11 @@ public class LaunchFragment extends Fragment {
 
         ButterKnife.inject(this, view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @OnClick(R.id.hostGame)
