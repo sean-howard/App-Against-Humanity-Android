@@ -23,15 +23,14 @@ public class DatabaseManager {
         Base base = gson.fromJson(loadJSONFromAsset(con), Base.class);
 
         Realm realm = Realm.getInstance(con);
-
         realm.beginTransaction();
 
         for(WhiteCard card: base.getPack().getWhiteCards()){
-            realm.copyToRealm(card);
+            //realm.copyToRealm(card);
         }
 
         for(BlackCard card: base.getPack().getBlackCards()){
-            realm.copyToRealm(card);
+            //realm.copyToRealm(card);
         }
 
         realm.commitTransaction();

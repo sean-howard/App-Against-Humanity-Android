@@ -13,6 +13,7 @@ public class Global extends Application {
 
     public MainThreadBus bus = new MainThreadBus();
     private static Global singleton;
+    public String name = "Chris";
 
     // Returns the application instance
     public static Global getInstance() {

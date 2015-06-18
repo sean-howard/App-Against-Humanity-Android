@@ -2,8 +2,9 @@ package com.appsagainst.humanity.LocalMultiplayer;
 
 import android.util.Log;
 
-import com.appsagainst.humanity.Events.ClientAdded;
+import com.appsagainst.humanity.Events.JoiningLobby;
 import com.appsagainst.humanity.Global;
+import com.appsagainst.humanity.POJO.Game;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.WebSocket;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
@@ -20,7 +21,6 @@ public class GameServer {
     ArrayList<WebSocket> clientSockets = new ArrayList<>();
 
     private static final String TAG = "GameServer";
-
     private int mPort = -1;
 
     public GameServer() {
@@ -29,7 +29,6 @@ public class GameServer {
             @Override
             public void onConnected(final WebSocket webSocket, AsyncHttpServerRequest request) {
                 clientSockets.add(webSocket);
-                Global.getInstance().bus.post(new ClientAdded(request.toString()));
 
                 //Use this to clean up any references to your websocket
                 webSocket.setClosedCallback(new CompletedCallback() {
@@ -43,6 +42,16 @@ public class GameServer {
                         }
                     }
                 });
+
+                webSocket.setStringCallback(new WebSocket.StringCallback() {
+                    @Override
+                    public void onStringAvailable(String s) {
+                        Log.d("GameServer", s);
+                        sendMessage(s.toUpperCase());
+
+                    }
+                });
+
             }
         });
 
