@@ -38,4 +38,5 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.koushikdutta.async:androidasync:2.+'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
+    compile 'com.lorentzos.swipecards:library:1.0.8'
 }
