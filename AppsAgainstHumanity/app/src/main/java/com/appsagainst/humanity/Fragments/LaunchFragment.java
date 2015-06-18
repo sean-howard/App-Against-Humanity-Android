@@ -35,12 +35,17 @@ public class LaunchFragment extends Fragment {
 
     @OnClick(R.id.hostGame)
     public void hostGameClicked(Button button) {
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, new HostGameFragment()).addToBackStack("1").commit();
+        Bundle args = new Bundle();
+        args.putBoolean("isHost",true);
+        LobbyFragment lobbyFragment =  new LobbyFragment();
+        lobbyFragment.setArguments(args);
+
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, lobbyFragment).addToBackStack("1").commit();
     }
 
     @OnClick(R.id.joinGame)
     public void joinGameClicked(Button button) {
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, new JoinGameFragment()).addToBackStack("2").commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, new LobbyFragment()).addToBackStack("2").commit();
     }
 
     @Override

@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.appsagainst.humanity.Events.MainThreadBus;
 
+import java.util.UUID;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -14,6 +16,7 @@ public class Global extends Application {
     public MainThreadBus bus = new MainThreadBus();
     private static Global singleton;
     public String name = "Chris";
+    public String uniqueID = "";
 
     // Returns the application instance
     public static Global getInstance() {
@@ -30,6 +33,6 @@ public class Global extends Application {
                         .build()
         );
 
-
+        uniqueID = UUID.randomUUID().toString();
     }
 }

@@ -2,7 +2,6 @@ package com.appsagainst.humanity.LocalMultiplayer;
 
 import android.util.Log;
 
-import com.appsagainst.humanity.Events.JoiningLobby;
 import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.POJO.DataObject;
 import com.appsagainst.humanity.Protocol.JsonResolver;
@@ -11,7 +10,6 @@ import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
 
 import java.net.InetAddress;
-import java.util.UUID;
 
 /**
  * Created by User on 09/05/2015.
@@ -44,11 +42,10 @@ public class GameClient {
                     }
                 });
 
-                UUID uniqueKey = UUID.randomUUID();
                 DataObject obj = new DataObject();
                 obj.action = JsonResolver.joiningLobby;
                 obj.data.playerName = Global.getInstance().name;
-                obj.data.uniqueID = uniqueKey.toString();
+                obj.data.uniqueID = Global.getInstance().uniqueID;
                 sendMessage(gson.toJson(obj));
 
             }
