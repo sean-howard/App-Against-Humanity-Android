@@ -53,7 +53,6 @@ public class LobbyFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -120,11 +119,8 @@ public class LobbyFragment extends Fragment {
     public void startGameSession(StartGameSession ca){
         game.players = sortGamePlayersByName(game.players);
 
-        Bundle args = new Bundle();
-        args.putSerializable("game",game);
-
         GameFragment gameFragment =  new GameFragment();
-        gameFragment.setArguments(args);
+        gameFragment.setData(game);
 
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, gameFragment).addToBackStack("1").commit();
     }

@@ -25,7 +25,8 @@ public class JsonResolver {
     public static final int displayBlackCardQuestion = 5;
     public static final int submitWhiteCardToServer = 6;
     public static final int allCardsSubmitted = 7;
-    public static final int chooseWinnerEvent = 8;
+    public static final int chooseWinner = 8;
+    public static final int topUpCards = 9;
 
     public static void resolveObject(DataObject object){
         if(object.action == playerJoinedLobby){
@@ -49,8 +50,10 @@ public class JsonResolver {
         } else if(object.action == allCardsSubmitted){
             Global.getInstance().bus.post(new AllCardsSubmitted());
 
-        } else if(object.action == chooseWinnerEvent){
+        } else if(object.action == chooseWinner){
             Global.getInstance().bus.post(new WinnerChosen(object.data.uniqueID, object.data.whiteCardID));
+
+        } else if(object.action == topUpCards){
 
         } else {
 

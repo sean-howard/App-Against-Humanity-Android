@@ -103,7 +103,7 @@ public class GameClient {
 
     public void chooseWinner(String uniqueID, int whiteCardID){
         DataObject obj = new DataObject();
-        obj.action = JsonResolver.chooseWinnerEvent;
+        obj.action = JsonResolver.chooseWinner;
         obj.data.uniqueID = uniqueID;
         obj.data.whiteCardID = whiteCardID;
         sendMessage(gson.toJson(obj));

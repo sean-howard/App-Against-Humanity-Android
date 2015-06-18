@@ -115,5 +115,18 @@ public class DatabaseManager {
         return realm.where(BlackCard.class).equalTo("id", id).findFirst();
     }
 
+    public static WhiteCard getRandomWhiteCard(Context con){
+        Realm realm = Realm.getInstance(con);
+        int count = (int)realm.where(BlackCard.class).count();
+
+        int min = 2000000;
+        int max = min + count;
+
+        Random r = new Random();
+        int id = r.nextInt(max - min) + min;
+
+        return realm.where(WhiteCard.class).equalTo("id", id).findFirst();
+    }
+
 
 }

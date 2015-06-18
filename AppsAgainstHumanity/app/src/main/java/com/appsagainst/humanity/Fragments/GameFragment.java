@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -62,14 +61,15 @@ public class GameFragment extends Fragment {
 
     }
 
+    public void setData(Game game){
+        this.game = game;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         Global.getInstance().bus.register(this);
-
-        Bundle b = getArguments();
-        game = (Game)b.getSerializable("game");
 
         if(game.isHost){
             game.gameClient.selectBlackCardPlayer(game.players.get(game.currentPlayerNumber).uniqueID);
@@ -94,8 +94,6 @@ public class GameFragment extends Fragment {
 
             if(game.currentWhiteCards.size() == 0){
                 distributeInitialWhiteCards();
-            } else {
-                //Top up cards
             }
 
             if(whiteCardAdapter != null){
@@ -106,16 +104,10 @@ public class GameFragment extends Fragment {
             getBlackCard();
         } else {
             game.isBlackCardPlayer = false;
-
             blackText.setText("");
 
-            if(whiteCardAdapter != null){
-                whiteCardAdapter.clear();
-                whiteCardAdapter.notifyDataSetChanged();
-            }
-
+            topUpCard();
             displayWhiteCards();
-
         }
     }
 
@@ -150,11 +142,18 @@ public class GameFragment extends Fragment {
 
     public <String, WhiteCard> String getKeyByValue(Map<String, WhiteCard> map, WhiteCard value) {
         for (Map.Entry<String, WhiteCard> entry : map.entrySet()) {
-            if (Objects.equals(value, entry.getValue())) {
+            if (value.equals(entry.getValue())) {
                 return entry.getKey();
             }
         }
         return null;
+    }
+
+    public void topUpCard(){
+        if(game.currentWhiteCards.size() < Global.getInstance().MAX_CARDS){
+            game.currentWhiteCards.add(DatabaseManager.getRandomWhiteCard(getActivity()));
+            topUpCard();
+        }
     }
 
     @Subscribe
