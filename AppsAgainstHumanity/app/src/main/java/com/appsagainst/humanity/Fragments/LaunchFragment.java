@@ -37,6 +37,7 @@ public class LaunchFragment extends Fragment {
     public void hostGameClicked(Button button) {
         Bundle args = new Bundle();
         args.putBoolean("isHost",true);
+
         LobbyFragment lobbyFragment =  new LobbyFragment();
         lobbyFragment.setArguments(args);
 
@@ -45,7 +46,7 @@ public class LaunchFragment extends Fragment {
 
     @OnClick(R.id.joinGame)
     public void joinGameClicked(Button button) {
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, new LobbyFragment()).addToBackStack("2").commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, new FindServerFragment()).addToBackStack("2").commit();
     }
 
     @Override

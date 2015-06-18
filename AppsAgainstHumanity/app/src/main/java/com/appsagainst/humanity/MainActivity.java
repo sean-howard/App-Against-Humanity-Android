@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import com.appsagainst.humanity.Fragments.GameFragment;
+import com.appsagainst.humanity.Fragments.LaunchFragment;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -16,7 +16,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.holder, new GameFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.holder, new LaunchFragment()).commit();
 
         //DatabaseManager.loadCardsIntoDatabase(this);
     }

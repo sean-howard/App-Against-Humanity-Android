@@ -2,9 +2,6 @@ package com.appsagainst.humanity.LocalMultiplayer;
 
 import android.util.Log;
 
-import com.appsagainst.humanity.Events.JoiningLobby;
-import com.appsagainst.humanity.Global;
-import com.appsagainst.humanity.POJO.Game;
 import com.appsagainst.humanity.Protocol.GamePlayer;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.WebSocket;
@@ -26,9 +23,19 @@ public class GameServer {
 
     public GameServer() {
         server = new AsyncHttpServer();
+
+        server.setErrorCallback(new CompletedCallback() {
+            @Override
+            public void onCompleted(Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
         server.websocket("/", new AsyncHttpServer.WebSocketRequestCallback() {
             @Override
             public void onConnected(final WebSocket webSocket, AsyncHttpServerRequest request) {
+                Log.d(TAG, "CLIENT CONNECTED");
+
                 GamePlayer player = new GamePlayer(
                         webSocket,
                         new CompletedCallback() {
@@ -39,7 +46,7 @@ public class GameServer {
                         }, new WebSocket.StringCallback() {
                             @Override
                             public void onStringAvailable(String s) {
-                                sendMessage(s.toUpperCase());
+                                sendMessage(s);
 
                             }
                         });

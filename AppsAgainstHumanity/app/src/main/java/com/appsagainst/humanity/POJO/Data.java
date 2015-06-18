@@ -1,5 +1,7 @@
 package com.appsagainst.humanity.POJO;
 
+import com.appsagainst.humanity.Protocol.Game;
+
 import java.util.ArrayList;
 
 /**
@@ -10,9 +12,9 @@ public class Data {
     public String playerName;
     public String uniqueID;
     public ArrayList<Integer> whiteCardIDs;
-    public int blackCardUniqueID;
-    public int winnerUniqueID;
-    public int blackCardID;
-    public int whiteCardID;
+    public int blackCardUniqueID = -1;
+    public int winnerUniqueID = -1;
+    public int blackCardID = -1;
+    public int whiteCardID = -1;
     public Game game;
 }

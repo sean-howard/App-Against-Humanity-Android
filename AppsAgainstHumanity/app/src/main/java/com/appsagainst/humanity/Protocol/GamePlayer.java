@@ -19,9 +19,12 @@ public class GamePlayer {
             @Override
             public void onCompleted(Exception ex) {
                 try {
-                    if (ex != null)
-                        Log.e("WebSocket", "Error");
-                } finally {
+                    if (ex != null) {
+                        ex.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally{
                     cc.onCompleted(ex);
                 }
             }

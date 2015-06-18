@@ -4,31 +4,30 @@ package com.appsagainst.humanity.Fragments;
  * Created by User on 09/05/2015.
  */
 
-import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.appsagainst.humanity.Events.JoiningLobby;
-import com.appsagainst.humanity.Events.ServerFoundEvent;
+import com.appsagainst.humanity.Events.PlayerJoinedLobby;
+import com.appsagainst.humanity.Events.StartGameSession;
 import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.LocalMultiplayer.GameClient;
 import com.appsagainst.humanity.LocalMultiplayer.GameServer;
 import com.appsagainst.humanity.LocalMultiplayer.NsdHelper;
+import com.appsagainst.humanity.Protocol.Game;
+import com.appsagainst.humanity.Protocol.Player;
 import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.InetAddress;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class LobbyFragment extends Fragment {
 
@@ -41,15 +40,14 @@ public class LobbyFragment extends Fragment {
     GameServer gameServer;
     GameClient gameClient;
 
-    List<String> clients = new ArrayList<>();
-    List<String> hosts = new ArrayList<>();
-    List<NsdServiceInfo> hostsInfo = new ArrayList<>();
-    ArrayAdapter<String> adapter;
+    ArrayAdapter<Player> adapter;
+
+    Game game = new Game();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_lobby, container, false);
+        View view = inflater.inflate(R.layout.fragment_host_game, container, false);
 
         ButterKnife.inject(this, view);
         return view;
@@ -72,54 +70,59 @@ public class LobbyFragment extends Fragment {
             mNsdHelper.initializeNsd();
             mNsdHelper.registerService(gameServer.getLocalPort());
 
-            gameClient = new GameClient("http://127.0.0.1", gameServer.getLocalPort());
-            adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, clients);
-            listView.setAdapter(adapter);
+            gameClient = new GameClient(true, "http://127.0.0.1", gameServer.getLocalPort());
         } else {
-            mNsdHelper = new NsdHelper(getActivity());
-            mNsdHelper.initializeNsd();
-
-            adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, hosts);
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    clickConnect(hostsInfo.get(position));
-                }
-            });
-
-            mNsdHelper.discoverServices();
+            gameClient = new GameClient(false, (InetAddress)b.getSerializable("host"), b.getInt("port"));
         }
-    }
 
-    public void clickConnect(NsdServiceInfo service) {
-        if (service != null) {
-            Log.d(TAG, "Connecting.");
-            gameClient = new GameClient(service.getHost(), service.getPort());
-        } else {
-            Log.d(TAG, "No service to connect to!");
-        }
+        adapter = new ArrayAdapter<Player>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.players);
+        listView.setAdapter(adapter);
     }
 
     @Override
     public void onDestroyView() {
         ButterKnife.reset(this);
-        mNsdHelper.tearDown();
+
+        if(mNsdHelper != null){
+            mNsdHelper.tearDown();
+        }
+
         super.onDestroyView();
 
     }
 
-    @Subscribe
-    public void clientAdded(JoiningLobby ca){
-        clients.add(ca.playerName);
-        adapter.notifyDataSetChanged();
+    @OnClick(R.id.startGame)
+    public void startGame() {
+        gameClient.startSession();
     }
 
     @Subscribe
-    public void serverFound(ServerFoundEvent sfe){
-        hosts.add(sfe.serverName);
-        hostsInfo.add(sfe.serviceInfo);
-        adapter.notifyDataSetChanged();
+    public void clientAdded(PlayerJoinedLobby ca){
+        boolean alreadyAdded = false;
+
+        for(Player p: game.players){
+            if(p.uniqueID.equals(ca.uniqueID)){
+                alreadyAdded = true;
+            }
+        }
+
+        if(!alreadyAdded){
+            Player p = new Player(ca.playerName, ca.uniqueID);
+            game.players.add(p);
+            adapter.notifyDataSetChanged();
+
+            gameClient.informPlayersOfName();
+        }
     }
 
+    @Subscribe
+    public void startGameSession(StartGameSession ca){
+        Bundle args = new Bundle();
+        args.putSerializable("game",game);
+
+        GameFragment gameFragment =  new GameFragment();
+        gameFragment.setArguments(args);
+
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, gameFragment).addToBackStack("1").commit();
+    }
 }

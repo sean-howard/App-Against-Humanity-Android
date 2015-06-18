@@ -16,23 +16,41 @@ import java.net.InetAddress;
  */
 public class GameClient {
 
-    private InetAddress mAddress;
     private int PORT;
+    private boolean isHost = false;
 
-    private final String CLIENT_TAG = "GameClient";
+    private final String TAG = "GameClient";
 
     WebSocket socket;
     Gson gson;
 
-    public GameClient(InetAddress address, int port) {
-        Log.d(CLIENT_TAG, "Creating GameClient");
-        this.mAddress = address;
+    public GameClient(boolean isHost, InetAddress address, int port) {
         this.PORT = port;
+        this.isHost = isHost;
+
+        setupClient("http://" + address.getHostAddress() + ":" + PORT);
+    }
+
+    public GameClient(boolean isHost, String url, int port) {
+        this.PORT = port;
+        this.isHost = isHost;
+
+        setupClient(url + ":" + PORT);
+    }
+
+    public void setupClient(String url){
+        Log.d(TAG, "Creating GameClient");
+
         this.gson = new Gson();
 
         AsyncHttpClient.WebSocketConnectCallback mWebSocketConnectCallback = new AsyncHttpClient.WebSocketConnectCallback() {
             @Override
             public void onCompleted(Exception ex, WebSocket webSocket) {
+                if (ex != null) {
+                    ex.printStackTrace();
+                    return;
+                }
+
                 socket = webSocket;
 
                 socket.setStringCallback(new WebSocket.StringCallback() {
@@ -41,45 +59,29 @@ public class GameClient {
                         JsonResolver.resolveObject(gson.fromJson(s, DataObject.class));
                     }
                 });
-
-                DataObject obj = new DataObject();
-                obj.action = JsonResolver.joiningLobby;
-                obj.data.playerName = Global.getInstance().name;
-                obj.data.uniqueID = Global.getInstance().uniqueID;
-                sendMessage(gson.toJson(obj));
-
+                informPlayersOfName();
             }
         };
 
         AsyncHttpClient mAsyncHttpClient = AsyncHttpClient.getDefaultInstance();
-        mAsyncHttpClient.websocket("http://" + mAddress.getHostAddress() + ":" + PORT, null, mWebSocketConnectCallback);
+        mAsyncHttpClient.websocket(url, null, mWebSocketConnectCallback);
     }
 
-    public GameClient(String url, int port) {
-        Log.d(CLIENT_TAG, "Creating GameClient");
-        this.PORT = port;
+    public void informPlayersOfName(){
+        Log.d(TAG, "INFORMING PLAYERS OF NAME");
 
-        AsyncHttpClient.WebSocketConnectCallback mWebSocketConnectCallback = new AsyncHttpClient.WebSocketConnectCallback() {
-            @Override
-            public void onCompleted(Exception ex, WebSocket webSocket) {
-                socket = webSocket;
-
-                socket.setStringCallback(new WebSocket.StringCallback() {
-                    @Override
-                    public void onStringAvailable(String s) {
-                        Log.d(CLIENT_TAG, s);
-
-                    }
-                });
-
-                sendMessage("{\"name\":\"Chris Owen\",\"action\":0}");
-            }
-        };
-
-        AsyncHttpClient mAsyncHttpClient = AsyncHttpClient.getDefaultInstance();
-        mAsyncHttpClient.websocket(url + ":" + PORT, null, mWebSocketConnectCallback);
+        DataObject obj = new DataObject();
+        obj.action = JsonResolver.playerJoinedLobby;
+        obj.data.playerName = Global.getInstance().name;
+        obj.data.uniqueID = Global.getInstance().uniqueID;
+        sendMessage(gson.toJson(obj));
     }
 
+    public void startSession(){
+        DataObject obj = new DataObject();
+        obj.action = JsonResolver.startGameSession;
+        sendMessage(gson.toJson(obj));
+    }
 
     private WebSocket getSocket() {
         return socket;
@@ -89,8 +91,12 @@ public class GameClient {
         getSocket().close();
     }
 
+    public boolean isPlayerHost(){
+        return isHost;
+    }
+
     public void sendMessage(String msg) {
-        Log.d(CLIENT_TAG, msg);
+        Log.d(TAG, "SENDING MESSAGE: " + msg);
         getSocket().send(msg);
     }
 }

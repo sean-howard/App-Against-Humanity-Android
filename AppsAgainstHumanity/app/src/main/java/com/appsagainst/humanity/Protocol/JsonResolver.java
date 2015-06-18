@@ -1,6 +1,7 @@
 package com.appsagainst.humanity.Protocol;
 
-import com.appsagainst.humanity.Events.JoiningLobby;
+import com.appsagainst.humanity.Events.PlayerJoinedLobby;
+import com.appsagainst.humanity.Events.StartGameSession;
 import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.POJO.DataObject;
 
@@ -10,7 +11,7 @@ import com.appsagainst.humanity.POJO.DataObject;
 public class JsonResolver {
 
     public static final int unknownAction = -1;
-    public static final int joiningLobby = 0;
+    public static final int playerJoinedLobby = 0;
     public static final int startGameSession = 1;
     public static final int startGameMatch = 2;
     public static final int selectBlackCardPlayer = 3;
@@ -21,10 +22,10 @@ public class JsonResolver {
     public static final int chooseWinnerEvent = 8;
 
     public static void resolveObject(DataObject object){
-        if(object.action == joiningLobby){
-            Global.getInstance().bus.post(new JoiningLobby(object.data.playerName, object.data.uniqueID));
+        if(object.action == playerJoinedLobby){
+            Global.getInstance().bus.post(new PlayerJoinedLobby(object.data.playerName, object.data.uniqueID));
         } else if(object.action == startGameSession){
-
+            Global.getInstance().bus.post(new StartGameSession());
         } else if(object.action == startGameMatch){
 
         } else if(object.action == selectBlackCardPlayer){

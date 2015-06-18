@@ -1,6 +1,7 @@
 package com.appsagainst.humanity;
 
 import android.app.Application;
+import android.os.Build;
 
 import com.appsagainst.humanity.Events.MainThreadBus;
 
@@ -15,7 +16,7 @@ public class Global extends Application {
 
     public MainThreadBus bus = new MainThreadBus();
     private static Global singleton;
-    public String name = "Chris";
+    public String name = "";
     public String uniqueID = "";
 
     // Returns the application instance
@@ -34,5 +35,30 @@ public class Global extends Application {
         );
 
         uniqueID = UUID.randomUUID().toString();
+        name = getDeviceName();
     }
+
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
+    }
+
+
 }
