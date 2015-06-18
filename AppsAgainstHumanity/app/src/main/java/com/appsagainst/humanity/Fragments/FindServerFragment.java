@@ -40,6 +40,8 @@ public class FindServerFragment extends Fragment {
     List<NsdServiceInfo> hostsInfo = new ArrayList<>();
     ArrayAdapter<String> adapter;
 
+    boolean busIsRegistered = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,7 +55,10 @@ public class FindServerFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Global.getInstance().bus.register(this);
+        if(!busIsRegistered){
+            Global.getInstance().bus.register(this);
+            busIsRegistered = true;
+        }
 
         mNsdHelper = new NsdHelper(getActivity());
         mNsdHelper.initializeNsd();
@@ -98,5 +103,14 @@ public class FindServerFragment extends Fragment {
         hosts.add(sfe.serverName);
         hostsInfo.add(sfe.serviceInfo);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if(busIsRegistered){
+            Global.getInstance().bus.unregister(this);
+            busIsRegistered = false;
+        }
     }
 }

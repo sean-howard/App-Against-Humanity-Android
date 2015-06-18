@@ -53,6 +53,8 @@ public class GameFragment extends Fragment {
     ArrayList<String> al;
     Game game;
 
+    boolean busIsRegistered = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game, container, false);
@@ -69,7 +71,10 @@ public class GameFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Global.getInstance().bus.register(this);
+        if(!busIsRegistered){
+            Global.getInstance().bus.register(this);
+            busIsRegistered = true;
+        }
 
         if(game.isHost){
             game.gameClient.selectBlackCardPlayer(game.players.get(game.currentPlayerNumber).uniqueID);
@@ -228,4 +233,14 @@ public class GameFragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if(busIsRegistered){
+            Global.getInstance().bus.unregister(this);
+            busIsRegistered = false;
+        }
+    }
+
 }

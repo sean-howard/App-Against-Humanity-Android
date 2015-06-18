@@ -24,7 +24,6 @@ import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -44,6 +43,8 @@ public class LobbyFragment extends Fragment {
 
     Game game = new Game();
 
+    boolean busIsRegistered = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,7 +58,10 @@ public class LobbyFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Global.getInstance().bus.register(this);
+        if(!busIsRegistered){
+            Global.getInstance().bus.register(this);
+            busIsRegistered = true;
+        }
 
         Bundle b = getArguments();
         boolean isHost = b.getBoolean("isHost", false);
@@ -117,7 +121,12 @@ public class LobbyFragment extends Fragment {
 
     @Subscribe
     public void startGameSession(StartGameSession ca){
-        game.players = sortGamePlayersByName(game.players);
+        Collections.sort(game.players, new Comparator<Player>() {
+            @Override
+            public int compare(Player object1, Player object2) {
+                return object1.name.compareTo(object2.name);
+            }
+        } );
 
         GameFragment gameFragment =  new GameFragment();
         gameFragment.setData(game);
@@ -125,16 +134,12 @@ public class LobbyFragment extends Fragment {
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, gameFragment).addToBackStack("1").commit();
     }
 
-    public ArrayList<Player> sortGamePlayersByName(ArrayList<Player> players){
-        Collections.sort(players, new Comparator<Player>() {
-            @Override
-            public int compare(Player object1, Player object2) {
-                return object1.name.compareTo(object2.name);
-            }
-        } );
-
-        return players;
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if(busIsRegistered){
+            Global.getInstance().bus.unregister(this);
+            busIsRegistered = false;
+        }
     }
-
-
 }
