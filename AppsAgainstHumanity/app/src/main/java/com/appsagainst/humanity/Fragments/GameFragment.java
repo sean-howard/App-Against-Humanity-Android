@@ -108,6 +108,8 @@ public class GameFragment extends Fragment {
 
             getBlackCard();
         } else {
+            Log.d(TAG, "IS NOT BLACK PLAYER");
+
             game.isBlackCardPlayer = false;
             blackText.setText("");
 
@@ -119,7 +121,13 @@ public class GameFragment extends Fragment {
     @Subscribe
     public void whiteCardSubmitted(SubmitWhiteCardToServer submitWhiteCardToServer){
         if(game.isBlackCardPlayer){
-            game.submittedWhiteCards.put(submitWhiteCardToServer.uniqueID, DatabaseManager.getWhiteCardByID(getActivity(), submitWhiteCardToServer.whitecardID));
+
+            ArrayList<WhiteCard> cards = new ArrayList<>();
+            for(int whiteCardID: submitWhiteCardToServer.whitecardIDs){
+                cards.add(DatabaseManager.getWhiteCardByID(getActivity(), whiteCardID));
+            }
+
+            game.submittedWhiteCards.put(submitWhiteCardToServer.uniqueID, cards);
 
             if(game.submittedWhiteCards.size() == game.players.size()-1){
                 game.gameClient.allCardsSubmitted();
@@ -130,6 +138,8 @@ public class GameFragment extends Fragment {
     @Subscribe
     public void allCardsSubmitted(AllCardsSubmitted allCardsSubmitted){
         if(game.isBlackCardPlayer){
+            //TODO Fix this so that it works for arraylists and not just single cards
+
             List<WhiteCard> cards = new ArrayList<>(game.submittedWhiteCards.values());
 
             whiteCardAdapter = new ArrayAdapter<WhiteCard>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, cards);
@@ -163,13 +173,13 @@ public class GameFragment extends Fragment {
 
     @Subscribe
     public void winnerChosen(WinnerChosen winnerChosen){
+        game.currentPlayerNumber++;
+
+        if(game.currentPlayerNumber >= game.players.size()){
+            game.currentPlayerNumber = 0;
+        }
+
         if(game.isBlackCardPlayer){
-            game.currentPlayerNumber++;
-
-            if(game.currentPlayerNumber >= game.players.size()){
-                game.currentPlayerNumber = 0;
-            }
-
             game.gameClient.selectBlackCardPlayer(game.players.get(game.currentPlayerNumber).uniqueID);
         } else {
             if(winnerChosen.uniqueID.equals(Global.getInstance().uniqueID)){

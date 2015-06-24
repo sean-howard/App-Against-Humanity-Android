@@ -36,22 +36,20 @@ public class JsonResolver {
             Global.getInstance().bus.post(new StartGameSession());
 
         } else if(object.action == selectBlackCardPlayer){
-            Global.getInstance().bus.post(new SelectBlackCardPlayer(object.data.blackCardPlayerUniqueID));
+            Global.getInstance().bus.post(new SelectBlackCardPlayer(object.data.uniqueID, object.data.blackCardID));
 
         } else if(object.action == distributeWhiteStartingCards){
             ArrayList<Integer> cardIDs = object.data.initialCards.get(Global.getInstance().uniqueID);
             Global.getInstance().bus.post(new GotInitialWhiteCardIDs(cardIDs));
 
-        } else if(object.action == displayBlackCardQuestion){
-
         } else if(object.action == submitWhiteCardToServer){
-            Global.getInstance().bus.post(new SubmitWhiteCardToServer(object.data.uniqueID, object.data.whiteCardID));
+            Global.getInstance().bus.post(new SubmitWhiteCardToServer(object.data.uniqueID, object.data.whiteCardIDs));
 
         } else if(object.action == allCardsSubmitted){
             Global.getInstance().bus.post(new AllCardsSubmitted());
 
         } else if(object.action == chooseWinner){
-            Global.getInstance().bus.post(new WinnerChosen(object.data.uniqueID, object.data.whiteCardID));
+            Global.getInstance().bus.post(new WinnerChosen(object.data.uniqueID, object.data.whiteCardIDs));
 
         } else if(object.action == topUpCards){
 

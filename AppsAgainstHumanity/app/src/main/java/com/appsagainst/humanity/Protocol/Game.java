@@ -23,7 +23,7 @@ public class Game{
     public ArrayList<Player> players = new ArrayList<Player>();
     public ArrayList<Match> match;
     public ArrayList<WhiteCard> currentWhiteCards = new ArrayList<>();
-    public HashMap<String, WhiteCard> submittedWhiteCards = new HashMap<>();
+    public HashMap<String, ArrayList<WhiteCard>> submittedWhiteCards = new HashMap<>();
     public ArrayList<Integer> blackCardIDs;
 
 }
