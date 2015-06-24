@@ -9,6 +9,8 @@ import com.appsagainst.humanity.POJO.BlackCard;
 import com.appsagainst.humanity.POJO.WhiteCard;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,20 +35,9 @@ public class DatabaseManager {
     }
 
     public static void loadCardsIntoDatabase(Context con){
-        Gson gson = new Gson();
-        Base base = gson.fromJson(loadJSONFromAsset(con), Base.class);
-
         Realm realm = Realm.getInstance(con);
         realm.beginTransaction();
-
-        for(WhiteCard card: base.getPack().getWhiteCards()){
-            realm.copyToRealm(card);
-        }
-
-        for(BlackCard card: base.getPack().getBlackCards()){
-            realm.copyToRealm(card);
-        }
-
+        realm.createObjectFromJson(Base.class, loadJSONFromAsset(con));
         realm.commitTransaction();
     }
 

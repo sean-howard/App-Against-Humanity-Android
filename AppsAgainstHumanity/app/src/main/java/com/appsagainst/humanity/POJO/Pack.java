@@ -5,19 +5,21 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 
-public class Pack {
+public class Pack extends RealmObject{
 
     @PrimaryKey
     @Expose
     private String name;
 
     @Expose
-    private List<BlackCard> blackCards = new ArrayList<BlackCard>();
+    private RealmList<BlackCard> blackCards = new RealmList<>();
     @Expose
-    private List<WhiteCard> whiteCards = new ArrayList<WhiteCard>();
+    private RealmList<WhiteCard> whiteCards = new RealmList<>();
 
     /**
      *
@@ -42,7 +44,7 @@ public class Pack {
      * @return
      * The blackCards
      */
-    public List<BlackCard> getBlackCards() {
+    public RealmList<BlackCard> getBlackCards() {
         return blackCards;
     }
 
@@ -51,7 +53,7 @@ public class Pack {
      * @param blackCards
      * The blackCards
      */
-    public void setBlackCards(List<BlackCard> blackCards) {
+    public void setBlackCards(RealmList<BlackCard> blackCards) {
         this.blackCards = blackCards;
     }
 
@@ -60,7 +62,7 @@ public class Pack {
      * @return
      * The whiteCards
      */
-    public List<WhiteCard> getWhiteCards() {
+    public RealmList<WhiteCard> getWhiteCards() {
         return whiteCards;
     }
 
@@ -69,7 +71,7 @@ public class Pack {
      * @param whiteCards
      * The whiteCards
      */
-    public void setWhiteCards(List<WhiteCard> whiteCards) {
+    public void setWhiteCards(RealmList<WhiteCard> whiteCards) {
         this.whiteCards = whiteCards;
     }
 

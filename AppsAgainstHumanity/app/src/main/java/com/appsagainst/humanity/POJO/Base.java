@@ -2,7 +2,9 @@ package com.appsagainst.humanity.POJO;
 
 import com.google.gson.annotations.Expose;
 
-public class Base{
+import io.realm.RealmObject;
+
+public class Base extends RealmObject{
 
     @Expose
     private Pack Pack;
