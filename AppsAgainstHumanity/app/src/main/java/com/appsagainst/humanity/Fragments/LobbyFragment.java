@@ -106,6 +106,9 @@ public class LobbyFragment extends Fragment {
 
         for(Player p: game.players){
             if(p.uniqueID.equals(ca.uniqueID)){
+                if(alreadyAdded){
+                    break;
+                }
                 alreadyAdded = true;
             }
         }

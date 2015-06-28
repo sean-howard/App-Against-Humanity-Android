@@ -236,7 +236,7 @@ public class GameFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                game.gameClient.selectCard(whiteCardAdapter.getItem(position).getId());
+                game.gameClient.selectCard(whiteCardAdapter.getItem(position));
 
                 game.currentWhiteCards.remove(position);
                 whiteCardAdapter.notifyDataSetChanged();

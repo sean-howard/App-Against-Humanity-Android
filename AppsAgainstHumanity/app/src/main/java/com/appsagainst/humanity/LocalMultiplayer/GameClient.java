@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.POJO.DataObject;
-import com.appsagainst.humanity.POJO.WhiteCard;
 import com.appsagainst.humanity.Protocol.JsonResolver;
 import com.google.gson.Gson;
 import com.koushikdutta.async.http.AsyncHttpClient;
@@ -88,10 +87,10 @@ public class GameClient {
         sendMessage(gson.toJson(obj));
     }
 
-    public void selectCard(int selectedCard){
+    public void selectCard(ArrayList<Integer> selectedCards){
         DataObject obj = new DataObject();
         obj.action = JsonResolver.submitWhiteCardToServer;
-        obj.data.whiteCardID = selectedCard;
+        obj.data.whiteCardIDs = selectedCards;
         obj.data.uniqueID = Global.getInstance().uniqueID;
         sendMessage(gson.toJson(obj));
     }
