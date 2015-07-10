@@ -19,7 +19,7 @@ public class Global extends Application {
     public String name = "";
     public String uniqueID = "";
 
-    public static final int MAX_CARDS = 5;
+    public static final int MAX_CARDS = 7;
 
     // Returns the application instance
     public static Global getInstance() {

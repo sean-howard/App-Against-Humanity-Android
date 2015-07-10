@@ -84,9 +84,15 @@ public class NsdHelper {
 
             @Override
             public void onServiceLost(NsdServiceInfo service) {
-                Log.e(TAG, "service lost" + service);
-                if (mService == service) {
-                    mService = null;
+                Log.d(TAG, "Service Lost " + service);
+                if (!service.getServiceType().equals(SERVICE_TYPE)) {
+                    Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
+                } else if (service.getServiceName().equals(mServiceName)) {
+                    Log.d(TAG, "Same machine: " + mServiceName);
+                    mNsdManager.resolveService(service, mResolveListener);
+                } else {
+                    Log.d(TAG, "Other machine: " + mServiceName);
+                    mNsdManager.resolveService(service, mResolveListener);
                 }
             }
             

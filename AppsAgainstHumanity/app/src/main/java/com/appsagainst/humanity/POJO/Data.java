@@ -12,6 +12,6 @@ public class Data implements Serializable{
     public String playerName;
     public String uniqueID;
     public int blackCardID= -1;
-    public ArrayList<Integer> whiteCardIDs = new ArrayList<>();
+    public int whiteCardID = -1;
     public HashMap<String, ArrayList<Integer>> initialCards;
 }

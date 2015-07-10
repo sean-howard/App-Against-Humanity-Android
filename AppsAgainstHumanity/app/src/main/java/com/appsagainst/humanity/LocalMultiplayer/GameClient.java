@@ -80,17 +80,18 @@ public class GameClient {
         sendMessage(gson.toJson(obj));
     }
 
-    public void selectBlackCardPlayer(String newBlackCardPlayer){
+    public void selectBlackCardPlayer(String newBlackCardPlayer, int blackCardID){
         DataObject obj = new DataObject();
         obj.action = JsonResolver.selectBlackCardPlayer;
         obj.data.uniqueID = newBlackCardPlayer;
+        obj.data.blackCardID = blackCardID;
         sendMessage(gson.toJson(obj));
     }
 
-    public void selectCard(ArrayList<Integer> selectedCards){
+    public void selectCard(int selectedCards){
         DataObject obj = new DataObject();
         obj.action = JsonResolver.submitWhiteCardToServer;
-        obj.data.whiteCardIDs = selectedCards;
+        obj.data.whiteCardID = selectedCards;
         obj.data.uniqueID = Global.getInstance().uniqueID;
         sendMessage(gson.toJson(obj));
     }
@@ -101,11 +102,11 @@ public class GameClient {
         sendMessage(gson.toJson(obj));
     }
 
-    public void chooseWinner(String uniqueID, ArrayList<Integer> whiteCardID){
+    public void chooseWinner(String uniqueID, int whiteCardID){
         DataObject obj = new DataObject();
         obj.action = JsonResolver.chooseWinner;
         obj.data.uniqueID = uniqueID;
-        obj.data.whiteCardIDs = whiteCardID;
+        obj.data.whiteCardID = whiteCardID;
         sendMessage(gson.toJson(obj));
     }
 

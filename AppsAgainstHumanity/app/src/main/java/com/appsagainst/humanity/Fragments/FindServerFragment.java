@@ -93,6 +93,9 @@ public class FindServerFragment extends Fragment {
             lobbyFragment.setArguments(args);
 
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.holder, lobbyFragment).addToBackStack("1").commit();
+
+            mNsdHelper.stopDiscovery();
+            mNsdHelper.tearDown();
         } else {
             Log.d(TAG, "No service to connect to!");
         }
