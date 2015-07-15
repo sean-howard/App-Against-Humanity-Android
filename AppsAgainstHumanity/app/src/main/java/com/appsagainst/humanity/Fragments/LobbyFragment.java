@@ -127,7 +127,7 @@ public class LobbyFragment extends Fragment {
         Collections.sort(game.players, new Comparator<Player>() {
             @Override
             public int compare(Player object1, Player object2) {
-                return object1.name.compareTo(object2.name);
+                return object1.uniqueID.compareTo(object2.uniqueID);
             }
         } );
 

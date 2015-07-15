@@ -7,10 +7,7 @@ import android.preference.PreferenceManager;
 import com.appsagainst.humanity.POJO.Base;
 import com.appsagainst.humanity.POJO.BlackCard;
 import com.appsagainst.humanity.POJO.WhiteCard;
-import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -88,6 +85,27 @@ public class DatabaseManager {
         for(int i = 0; i<amount; i++){
             int id = r.nextInt(max - min) + min;
             cardIDs.add(id);
+        }
+
+        return cardIDs;
+    }
+
+    public static int getNumberOfWhiteCards(Context con){
+        Realm realm = Realm.getInstance(con);
+        return (int)realm.where(WhiteCard.class).count();
+    }
+
+    public static ArrayList<Integer> getAllWhiteCardIDs(Context con){
+        ArrayList<Integer> cardIDs = new ArrayList<>();
+
+        Realm realm = Realm.getInstance(con);
+        int count = (int)realm.where(WhiteCard.class).count();
+
+        int min = 2000000;
+        int max = min + count;
+
+        for(int i = min; i<max; i++){
+            cardIDs.add(i);
         }
 
         return cardIDs;

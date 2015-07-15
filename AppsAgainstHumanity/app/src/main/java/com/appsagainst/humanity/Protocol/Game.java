@@ -1,5 +1,6 @@
 package com.appsagainst.humanity.Protocol;
 
+import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.LocalMultiplayer.GameClient;
 import com.appsagainst.humanity.LocalMultiplayer.GameServer;
 import com.appsagainst.humanity.POJO.WhiteCard;
@@ -19,11 +20,13 @@ public class Game{
     public boolean isBlackCardPlayer = false;
 
     public int currentPlayerNumber = 0;
+    public int currentWhiteCard = Global.MAX_CARDS;
 
     public ArrayList<Player> players = new ArrayList<Player>();
-    public ArrayList<Match> match;
-    public ArrayList<WhiteCard> currentWhiteCards = new ArrayList<>();
-    public HashMap<String, WhiteCard> submittedWhiteCards = new HashMap<>();
-    public ArrayList<Integer> blackCardIDs;
+    public ArrayList<WhiteCard> currentWhiteCardHand = new ArrayList<>();
 
+    public HashMap<String, WhiteCard> submittedWhiteCards = new HashMap<>();
+
+    public HashMap<String, ArrayList<Integer>> distributedWhiteCards = new HashMap<>();
+    public ArrayList<Integer> myDitributedWhiteCards = new ArrayList<>();
 }

@@ -10,8 +10,6 @@ import com.appsagainst.humanity.Events.WinnerChosen;
 import com.appsagainst.humanity.Global;
 import com.appsagainst.humanity.POJO.DataObject;
 
-import java.util.ArrayList;
-
 /**
  * Created by Chris.Owen on 12/05/2015.
  */
@@ -39,8 +37,7 @@ public class JsonResolver {
             Global.getInstance().bus.post(new SelectBlackCardPlayer(object.data.uniqueID, object.data.blackCardID));
 
         } else if(object.action == distributeWhiteStartingCards){
-            ArrayList<Integer> cardIDs = object.data.initialCards.get(Global.getInstance().uniqueID);
-            Global.getInstance().bus.post(new GotInitialWhiteCardIDs(cardIDs));
+            Global.getInstance().bus.post(new GotInitialWhiteCardIDs(object.data.initialCards));
 
         } else if(object.action == submitWhiteCardToServer){
             Global.getInstance().bus.post(new SubmitWhiteCardToServer(object.data.uniqueID, object.data.whiteCardID));
