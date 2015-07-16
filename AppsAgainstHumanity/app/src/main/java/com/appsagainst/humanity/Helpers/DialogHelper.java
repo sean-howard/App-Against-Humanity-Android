@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
+import com.appsagainst.humanity.Global;
+
 public class DialogHelper {
 
     ProgressDialog progressDialog;
@@ -14,13 +16,10 @@ public class DialogHelper {
         if(dialogHelper == null){
             dialogHelper = new DialogHelper();
         }
-
         return dialogHelper;
     }
 
-    protected DialogHelper(){
-
-    }
+    protected DialogHelper(){}
 
     public static void displayWinnerDialog(Activity act, boolean didWin, String winnerName, final DialogCallback callback){
         String displayTitle;
@@ -37,7 +36,7 @@ public class DialogHelper {
         new AlertDialog.Builder(act)
                 .setTitle(displayTitle)
                 .setMessage(message)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(Global.getInstance().copy.getAnySubmit(), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         if (callback != null) {
@@ -61,7 +60,7 @@ public class DialogHelper {
         new AlertDialog.Builder(act)
                 .setTitle("You sure?")
                 .setMessage("You sure you want to choose this winner?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(Global.getInstance().copy.getAnySubmit(), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         if (callback != null) {

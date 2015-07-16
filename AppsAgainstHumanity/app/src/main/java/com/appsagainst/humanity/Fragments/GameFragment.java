@@ -1,9 +1,5 @@
 package com.appsagainst.humanity.Fragments;
 
-/**
- * Created by User on 09/05/2015.
- */
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,6 +26,8 @@ import com.appsagainst.humanity.Protocol.Game;
 import com.appsagainst.humanity.Protocol.Player;
 import com.appsagainst.humanity.R;
 import com.squareup.otto.Subscribe;
+
+import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -247,7 +245,7 @@ public class GameFragment extends Fragment {
     }
 
     public void displayBlackCard(BlackCard blackCard){
-        blackText.setText(blackCard.getText());
+        blackText.setText(Jsoup.parse(blackCard.getText()).text());
     }
 
     public void displayWhiteCards(){

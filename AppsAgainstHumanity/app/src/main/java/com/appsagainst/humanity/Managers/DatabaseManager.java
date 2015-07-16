@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.appsagainst.humanity.Helpers.FileHelper;
 import com.appsagainst.humanity.POJO.Base;
 import com.appsagainst.humanity.POJO.BlackCard;
 import com.appsagainst.humanity.POJO.WhiteCard;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -34,24 +33,8 @@ public class DatabaseManager {
     public static void loadCardsIntoDatabase(Context con){
         Realm realm = Realm.getInstance(con);
         realm.beginTransaction();
-        realm.createObjectFromJson(Base.class, loadJSONFromAsset(con));
+        realm.createObjectFromJson(Base.class, FileHelper.loadJSONFromAsset(con, "cards.json"));
         realm.commitTransaction();
-    }
-
-    public static String loadJSONFromAsset(Context con) {
-        String json = null;
-        try {
-            InputStream is = con.getAssets().open("cards.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
     }
 
     public static WhiteCard getWhiteCardByID(Context con, int id){
