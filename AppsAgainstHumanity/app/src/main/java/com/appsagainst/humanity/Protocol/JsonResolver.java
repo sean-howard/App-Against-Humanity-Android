@@ -40,13 +40,13 @@ public class JsonResolver {
             Global.getInstance().bus.post(new GotInitialWhiteCardIDs(object.data.initialCards));
 
         } else if(object.action == submitWhiteCardToServer){
-            Global.getInstance().bus.post(new SubmitWhiteCardToServer(object.data.uniqueID, object.data.whiteCardID));
+            Global.getInstance().bus.post(new SubmitWhiteCardToServer(object.data.uniqueID, object.data.whiteCardIDs));
 
         } else if(object.action == allCardsSubmitted){
             Global.getInstance().bus.post(new AllCardsSubmitted());
 
         } else if(object.action == chooseWinner){
-            Global.getInstance().bus.post(new WinnerChosen(object.data.uniqueID, object.data.whiteCardID));
+            Global.getInstance().bus.post(new WinnerChosen(object.data.uniqueID, object.data.whiteCardIDs));
 
         } else if(object.action == topUpCards){
 

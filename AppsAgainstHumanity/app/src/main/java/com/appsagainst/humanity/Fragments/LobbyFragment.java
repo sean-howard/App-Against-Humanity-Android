@@ -67,16 +67,16 @@ public class LobbyFragment extends Fragment {
         boolean isHost = b.getBoolean("isHost", false);
 
         if(isHost){
-            game.gameServer = new GameServer();
+            game.setGameServer(new GameServer());
 
             mNsdHelper = new NsdHelper(getActivity());
             mNsdHelper.initializeNsd();
-            mNsdHelper.registerService(game.gameServer.getLocalPort());
+            mNsdHelper.registerService(game.getGameServer().getLocalPort());
 
-            game.gameClient = new GameClient("http://127.0.0.1", game.gameServer.getLocalPort());
-            game.isHost = true;
+            game.setGameClient(new GameClient("http://127.0.0.1", game.getGameServer().getLocalPort()));
+            game.setIsHost(true);
         } else {
-            game.gameClient = new GameClient((InetAddress)b.getSerializable("host"), b.getInt("port"));
+            game.setGameClient(new GameClient((InetAddress)b.getSerializable("host"), b.getInt("port")));
         }
 
         adapter = new ArrayAdapter<Player>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.players);
@@ -97,7 +97,7 @@ public class LobbyFragment extends Fragment {
 
     @OnClick(R.id.startGame)
     public void startGame() {
-        game.gameClient.startSession();
+        game.getGameClient().startSession();
     }
 
     @Subscribe
@@ -118,7 +118,7 @@ public class LobbyFragment extends Fragment {
             game.players.add(p);
             adapter.notifyDataSetChanged();
 
-            game.gameClient.informPlayersOfName();
+            game.getGameClient().informPlayersOfName();
         }
     }
 
