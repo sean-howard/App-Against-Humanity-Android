@@ -4,9 +4,8 @@ import java.util.ArrayList;
 
 public class Submission {
 
-    String uniqueID;
-
-    ArrayList<WhiteCard> whiteCards;
+    private String uniqueID;
+    private ArrayList<WhiteCard> whiteCards;
 
     public Submission(String uniqueID, ArrayList<WhiteCard> whiteCards){
         this.uniqueID = uniqueID;

@@ -20,7 +20,7 @@ public class Game{
     private boolean isHost = false;
     private boolean isBlackCardPlayer = false;
 
-    private int currentPlayerNumber = 0;
+    private int currentBlackPlayerNumber = 0;
     private int currentWhiteCard = Global.MAX_CARDS;
 
     private ArrayList<Player> players = new ArrayList<Player>();
@@ -63,16 +63,16 @@ public class Game{
         this.isBlackCardPlayer = isBlackCardPlayer;
     }
 
-    public int getCurrentPlayerNumber() {
-        return currentPlayerNumber;
+    public int getCurrentBlackPlayerNumber() {
+        return currentBlackPlayerNumber;
     }
 
-    public void setCurrentPlayerNumber(int currentPlayerNumber) {
-        this.currentPlayerNumber = currentPlayerNumber;
+    public void setCurrentBlackPlayerNumber(int currentBlackPlayerNumber) {
+        this.currentBlackPlayerNumber = currentBlackPlayerNumber;
     }
 
     public void incrementCurrentPlayerNumber() {
-        this.currentPlayerNumber++;
+        this.currentBlackPlayerNumber++;
     }
 
     public int getCurrentWhiteCard() {

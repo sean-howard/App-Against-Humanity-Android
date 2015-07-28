@@ -15,22 +15,20 @@ import java.util.Random;
  * Created by User on 09/05/2015.
  */
 public class GameServer {
-    AsyncHttpServer server;
-    ArrayList<GamePlayer> players = new ArrayList<>();
+    private AsyncHttpServer server;
+    private ArrayList<GamePlayer> players = new ArrayList<>();
 
     private static final String TAG = "GameServer";
     private int mPort = -1;
 
     public GameServer() {
         server = new AsyncHttpServer();
-
         server.setErrorCallback(new CompletedCallback() {
             @Override
             public void onCompleted(Exception ex) {
                 ex.printStackTrace();
             }
         });
-
         server.websocket("/", new AsyncHttpServer.WebSocketRequestCallback() {
             @Override
             public void onConnected(final WebSocket webSocket, AsyncHttpServerRequest request) {

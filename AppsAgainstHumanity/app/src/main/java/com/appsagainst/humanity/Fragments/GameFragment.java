@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.appsagainst.humanity.Events.AllCardsSubmitted;
 import com.appsagainst.humanity.Events.GotInitialWhiteCardIDs;
+import com.appsagainst.humanity.Events.PlayerDisconnected;
 import com.appsagainst.humanity.Events.SelectBlackCardPlayer;
 import com.appsagainst.humanity.Events.SubmitWhiteCardToServer;
 import com.appsagainst.humanity.Events.WinnerChosen;
@@ -43,11 +44,8 @@ public class GameFragment extends Fragment {
 
     private final String TAG = "GameFragment";
 
-    @InjectView(R.id.listView)
-    ListView listView;
-
-    @InjectView(R.id.blackText)
-    TextView blackText;
+    @InjectView(R.id.listView) ListView listView;
+    @InjectView(R.id.blackText) TextView blackText;
 
     private ArrayAdapter<WhiteCard> whiteCardAdapter;
     private ArrayAdapter<Submission> chooseWinnerAdapter;
@@ -77,7 +75,7 @@ public class GameFragment extends Fragment {
         }
 
         if(game.isHost()){
-            game.getGameClient().selectBlackCardPlayer(game.getPlayers().get(game.getCurrentPlayerNumber()).uniqueID, DatabaseManager.getRandomBlackCard(getActivity()).getId());
+            game.getGameClient().selectBlackCardPlayer(game.getPlayers().get(game.getCurrentBlackPlayerNumber()).uniqueID, DatabaseManager.getRandomBlackCard(getActivity()).getId());
         }
     }
 
@@ -177,12 +175,12 @@ public class GameFragment extends Fragment {
 
         game.incrementCurrentPlayerNumber();
 
-        if(game.getCurrentPlayerNumber() >= game.getPlayers().size()){
-            game.setCurrentPlayerNumber(0);
+        if(game.getCurrentBlackPlayerNumber() >= game.getPlayers().size()){
+            game.setCurrentBlackPlayerNumber(0);
         }
 
         if(game.isBlackCardPlayer()){
-            game.getGameClient().selectBlackCardPlayer(game.getPlayers().get(game.getCurrentPlayerNumber()).uniqueID, DatabaseManager.getRandomBlackCard(getActivity()).getId());
+            game.getGameClient().selectBlackCardPlayer(game.getPlayers().get(game.getCurrentBlackPlayerNumber()).uniqueID, DatabaseManager.getRandomBlackCard(getActivity()).getId());
         } else {
             Player winningPlayer = null;
             for(Player player: game.getPlayers()){
@@ -212,6 +210,15 @@ public class GameFragment extends Fragment {
 
         if(!game.isBlackCardPlayer()){
             displayWhiteCards();
+        }
+    }
+
+    @Subscribe
+    public void playerDisconnected(PlayerDisconnected playerDisconnected){
+        if(game.isBlackCardPlayer()){
+            //
+        } else {
+
         }
     }
 
@@ -245,12 +252,12 @@ public class GameFragment extends Fragment {
     }
 
     public void displayWhiteCards(){
-        whiteCardAdapter = new ArrayAdapter<WhiteCard>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.getCurrentWhiteCardHand());
+        whiteCardAdapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.getCurrentWhiteCardHand());
         listView.setAdapter(whiteCardAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ArrayList<WhiteCard> selectedCards = new ArrayList<WhiteCard>();
+                ArrayList<WhiteCard> selectedCards = new ArrayList<>();
                 selectedCards.add(whiteCardAdapter.getItem(position));
 
                 CardHelper.getIDsFromCards(selectedCards);

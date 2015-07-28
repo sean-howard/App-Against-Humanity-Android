@@ -2,6 +2,7 @@ package com.appsagainst.humanity.Protocol;
 
 import com.appsagainst.humanity.Events.AllCardsSubmitted;
 import com.appsagainst.humanity.Events.GotInitialWhiteCardIDs;
+import com.appsagainst.humanity.Events.PlayerDisconnected;
 import com.appsagainst.humanity.Events.PlayerJoinedLobby;
 import com.appsagainst.humanity.Events.SelectBlackCardPlayer;
 import com.appsagainst.humanity.Events.StartGameSession;
@@ -24,7 +25,7 @@ public class JsonResolver {
     public static final int submitWhiteCardToServer = 6;
     public static final int allCardsSubmitted = 7;
     public static final int chooseWinner = 8;
-    public static final int topUpCards = 9;
+    public static final int playerDisconnected = 9;
 
     public static void resolveObject(DataObject object){
         if(object.action == playerJoinedLobby){
@@ -48,8 +49,8 @@ public class JsonResolver {
         } else if(object.action == chooseWinner){
             Global.getInstance().bus.post(new WinnerChosen(object.data.uniqueID, object.data.whiteCardIDs));
 
-        } else if(object.action == topUpCards){
-
+        } else if(object.action == playerDisconnected){
+            Global.getInstance().bus.post(new PlayerDisconnected(object.data.uniqueID));
         } else {
 
         }
