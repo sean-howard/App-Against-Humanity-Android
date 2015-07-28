@@ -20,11 +20,11 @@ public class Game{
     private boolean isHost = false;
     private boolean isBlackCardPlayer = false;
 
-    public int currentPlayerNumber = 0;
-    public int currentWhiteCard = Global.MAX_CARDS;
+    private int currentPlayerNumber = 0;
+    private int currentWhiteCard = Global.MAX_CARDS;
 
-    public ArrayList<Player> players = new ArrayList<Player>();
-    public ArrayList<WhiteCard> currentWhiteCardHand = new ArrayList<>();
+    private ArrayList<Player> players = new ArrayList<Player>();
+    private ArrayList<WhiteCard> currentWhiteCardHand = new ArrayList<>();
 
     public HashMap<String, Submission> submittedWhiteCards = new HashMap<>();
 
@@ -69,6 +69,10 @@ public class Game{
 
     public void setCurrentPlayerNumber(int currentPlayerNumber) {
         this.currentPlayerNumber = currentPlayerNumber;
+    }
+
+    public void incrementCurrentPlayerNumber() {
+        this.currentPlayerNumber++;
     }
 
     public int getCurrentWhiteCard() {

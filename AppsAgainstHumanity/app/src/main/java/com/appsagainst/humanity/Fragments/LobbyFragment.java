@@ -79,7 +79,7 @@ public class LobbyFragment extends Fragment {
             game.setGameClient(new GameClient((InetAddress)b.getSerializable("host"), b.getInt("port")));
         }
 
-        adapter = new ArrayAdapter<Player>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.players);
+        adapter = new ArrayAdapter<Player>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.getPlayers());
         listView.setAdapter(adapter);
     }
 
@@ -104,7 +104,7 @@ public class LobbyFragment extends Fragment {
     public void clientAdded(PlayerJoinedLobby ca){
         boolean alreadyAdded = false;
 
-        for(Player p: game.players){
+        for(Player p: game.getPlayers()){
             if(p.uniqueID.equals(ca.uniqueID)){
                 if(alreadyAdded){
                     break;
@@ -115,7 +115,7 @@ public class LobbyFragment extends Fragment {
 
         if(!alreadyAdded){
             Player p = new Player(ca.playerName, ca.uniqueID);
-            game.players.add(p);
+            game.getPlayers().add(p);
             adapter.notifyDataSetChanged();
 
             game.getGameClient().informPlayersOfName();
@@ -124,7 +124,7 @@ public class LobbyFragment extends Fragment {
 
     @Subscribe
     public void startGameSession(StartGameSession ca){
-        Collections.sort(game.players, new Comparator<Player>() {
+        Collections.sort(game.getPlayers(), new Comparator<Player>() {
             @Override
             public int compare(Player object1, Player object2) {
                 return object1.name.compareTo(object2.name);

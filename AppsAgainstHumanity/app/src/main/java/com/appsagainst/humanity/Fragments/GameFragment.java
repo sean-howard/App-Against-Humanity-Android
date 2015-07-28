@@ -34,7 +34,6 @@ import org.jsoup.Jsoup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import butterknife.ButterKnife;
@@ -53,9 +52,8 @@ public class GameFragment extends Fragment {
     private ArrayAdapter<WhiteCard> whiteCardAdapter;
     private ArrayAdapter<Submission> chooseWinnerAdapter;
 
-    Game game;
-
-    boolean busIsRegistered = false;
+    private Game game;
+    private boolean busIsRegistered = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,7 +77,7 @@ public class GameFragment extends Fragment {
         }
 
         if(game.isHost()){
-            game.getGameClient().selectBlackCardPlayer(game.players.get(game.currentPlayerNumber).uniqueID, DatabaseManager.getRandomBlackCard(getActivity()).getId());
+            game.getGameClient().selectBlackCardPlayer(game.getPlayers().get(game.getCurrentPlayerNumber()).uniqueID, DatabaseManager.getRandomBlackCard(getActivity()).getId());
         }
     }
 
@@ -99,7 +97,7 @@ public class GameFragment extends Fragment {
 
             game.setIsBlackCardPlayer(true);
 
-            if(game.currentWhiteCardHand.size() == 0){
+            if(game.getCurrentWhiteCardHand().size() == 0){
                 distributeInitialWhiteCards();
             }
 
@@ -132,7 +130,7 @@ public class GameFragment extends Fragment {
             Submission sub = new Submission(submitWhiteCardToServer.uniqueID, cards);
             game.submittedWhiteCards.put(submitWhiteCardToServer.uniqueID, sub);
 
-            if(game.submittedWhiteCards.size() == game.players.size()-1){
+            if(game.submittedWhiteCards.size() == game.getPlayers().size()-1){
                 game.getGameClient().allCardsSubmitted();
             }
         }
@@ -153,7 +151,7 @@ public class GameFragment extends Fragment {
                     DialogHelper.displayConfirmWinnerDialog(getActivity(), new DialogHelper.DialogCallback() {
                         @Override
                         public void positiveClick() {
-                            game.getGameClient().chooseWinner(getKeyByValue(game.submittedWhiteCards, chooseWinnerAdapter.getItem(position)), CardHelper.getIDsFromCards(chooseWinnerAdapter.getItem(position).getWhiteCards()));
+                            game.getGameClient().chooseWinner(chooseWinnerAdapter.getItem(position).getUniqueID(), CardHelper.getIDsFromCards(chooseWinnerAdapter.getItem(position).getWhiteCards()));
                         }
 
                         @Override
@@ -166,18 +164,9 @@ public class GameFragment extends Fragment {
         }
     }
 
-    public <String, WhiteCard> String getKeyByValue(Map<String, WhiteCard> map, WhiteCard value) {
-        for (Map.Entry<String, WhiteCard> entry : map.entrySet()) {
-            if (value.equals(entry.getValue())) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
-
     public void topUpCard(){
-        if(game.currentWhiteCardHand.size() != 0 && game.currentWhiteCardHand.size() < Global.MAX_CARDS){
-            game.currentWhiteCardHand.add(DatabaseManager.getRandomWhiteCard(getActivity()));
+        if(game.getCurrentWhiteCardHand().size() != 0 && game.getCurrentWhiteCardHand().size() < Global.MAX_CARDS){
+            game.getCurrentWhiteCardHand().add(DatabaseManager.getRandomWhiteCard(getActivity()));
             topUpCard();
         }
     }
@@ -186,17 +175,17 @@ public class GameFragment extends Fragment {
     public void winnerChosen(WinnerChosen winnerChosen){
         DialogHelper.getInstance().hideProgressDialog();
 
-        game.currentPlayerNumber++;
+        game.incrementCurrentPlayerNumber();
 
-        if(game.currentPlayerNumber >= game.players.size()){
-            game.currentPlayerNumber = 0;
+        if(game.getCurrentPlayerNumber() >= game.getPlayers().size()){
+            game.setCurrentPlayerNumber(0);
         }
 
         if(game.isBlackCardPlayer()){
-            game.getGameClient().selectBlackCardPlayer(game.players.get(game.currentPlayerNumber).uniqueID, DatabaseManager.getRandomBlackCard(getActivity()).getId());
+            game.getGameClient().selectBlackCardPlayer(game.getPlayers().get(game.getCurrentPlayerNumber()).uniqueID, DatabaseManager.getRandomBlackCard(getActivity()).getId());
         } else {
             Player winningPlayer = null;
-            for(Player player: game.players){
+            for(Player player: game.getPlayers()){
                 if(winnerChosen.uniqueID.equals(player.uniqueID)){
                     winningPlayer = player;
                 }
@@ -218,7 +207,7 @@ public class GameFragment extends Fragment {
 
         Log.d(TAG, "GOT INITIAL WHITE CARDS");
         for(int i = 0; i<Global.MAX_CARDS; i++){
-            game.currentWhiteCardHand.add(DatabaseManager.getWhiteCardByID(getActivity(), game.myDitributedWhiteCards.get(i)));
+            game.getCurrentWhiteCardHand().add(DatabaseManager.getWhiteCardByID(getActivity(), game.myDitributedWhiteCards.get(i)));
         }
 
         if(!game.isBlackCardPlayer()){
@@ -233,7 +222,7 @@ public class GameFragment extends Fragment {
 
     public void distributeInitialWhiteCards(){
         try {
-            int numberOfPlayers = game.players.size();
+            int numberOfPlayers = game.getPlayers().size();
             int numberOfIDs = DatabaseManager.getNumberOfWhiteCards(getActivity());
             int numberOfCardsPerPlayer = numberOfIDs/numberOfPlayers;
 
@@ -242,7 +231,7 @@ public class GameFragment extends Fragment {
             HashMap<String, ArrayList<Integer>> cardIDs = new HashMap<>();
 
             for(int i = 0; i<numberOfPlayers; i++){
-                cardIDs.put(game.players.get(i).uniqueID, (ArrayList<Integer>) allCardIDs.subList(i * numberOfCardsPerPlayer, (i + 1) * numberOfCardsPerPlayer));
+                cardIDs.put(game.getPlayers().get(i).uniqueID, (ArrayList<Integer>) allCardIDs.subList(i * numberOfCardsPerPlayer, (i + 1) * numberOfCardsPerPlayer));
             }
 
             game.getGameClient().distributeWhiteCards(cardIDs);
@@ -256,7 +245,7 @@ public class GameFragment extends Fragment {
     }
 
     public void displayWhiteCards(){
-        whiteCardAdapter = new ArrayAdapter<WhiteCard>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.currentWhiteCardHand);
+        whiteCardAdapter = new ArrayAdapter<WhiteCard>(getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, game.getCurrentWhiteCardHand());
         listView.setAdapter(whiteCardAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -268,7 +257,7 @@ public class GameFragment extends Fragment {
 
                 game.getGameClient().selectCards(CardHelper.getIDsFromCards(selectedCards));
 
-                game.currentWhiteCardHand.remove(position);
+                game.getCurrentWhiteCardHand().remove(position);
                 whiteCardAdapter.notifyDataSetChanged();
 
                 DialogHelper.getInstance().displayProgressDialog(getActivity(), "Card Submitted", "Please wait for everybody else...");
